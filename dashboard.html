@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html>
 <head>
   <meta charset="UTF-8">
@@ -161,10 +161,10 @@
   <input type="text" id="title" placeholder="Book Title">
   <input type="text" id="category" placeholder="Category (e.g. Fiction, Technology, History)">
 
-  <label>Cover Image</label>
+  <label>Cover Image (max 5 MB)</label>
   <input type="file" id="cover" accept="image/*">
 
-  <label>PDF File</label>
+  <label>PDF File (max 15 MB)</label>
   <input type="file" id="pdf" accept="application/pdf">
 
   <button class="btn" id="uploadBtn" onclick="uploadBook()">Upload Book</button>
@@ -195,6 +195,10 @@ window.logout = function () {
   });
 };
 
+// File size limits (in bytes)
+const MAX_COVER_SIZE = 5 * 1024 * 1024;   // 5 MB
+const MAX_PDF_SIZE   = 15 * 1024 * 1024;  // 15 MB
+
 // Load all books
 async function loadBooks() {
   const snapshot = await getDocs(collection(db, "books"));
@@ -208,16 +212,13 @@ async function loadBooks() {
 
   snapshot.forEach((d) => {
     const book = d.data();
-
     container.innerHTML += `
       <div class="book-item">
         <img src="${book.coverUrl}" alt="${book.title} cover">
-
         <div class="book-info">
           <strong>${book.title}</strong>
           <small style="color:#555;">${book.category || 'Uncategorized'}</small>
         </div>
-
         <div class="actions">
           <a href="${book.pdfUrl}" target="_blank" style="text-decoration:none;">
             <button class="view-btn">📖 View PDF</button>
@@ -243,7 +244,19 @@ window.deleteBook = async function (id) {
   }
 };
 
-// Upload book function (Improved for Cloudinary PDF)
+function showStatus(message, color = "#0d6efd") {
+  const status = document.getElementById("status");
+  status.style.color = color;
+  status.innerHTML = message;
+}
+
+function resetButton() {
+  const uploadBtn = document.getElementById("uploadBtn");
+  uploadBtn.disabled = false;
+  uploadBtn.innerText = "Upload Book";
+}
+
+// Main upload function
 window.uploadBook = async function () {
   const title = document.getElementById("title").value.trim();
   const category = document.getElementById("category").value.trim();
@@ -253,60 +266,70 @@ window.uploadBook = async function () {
   const uploadBtn = document.getElementById("uploadBtn");
 
   if (!title || !category || !coverFile || !pdfFile) {
-    status.style.color = "red";
-    status.innerText = "⚠️ Please fill all fields and select both files";
+    showStatus("⚠️ Please fill all fields and select both files", "red");
     return;
   }
 
-  // Disable button and show loading
+  // === File size validation ===
+  if (coverFile.size > MAX_COVER_SIZE) {
+    const sizeMB = (coverFile.size / (1024 * 1024)).toFixed(2);
+    showStatus(`❌ Cover image too large.<br>Got ${sizeMB} MB. Maximum is 5 MB.`, "red");
+    return;
+  }
+
+  if (pdfFile.size > MAX_PDF_SIZE) {
+    const sizeMB = (pdfFile.size / (1024 * 1024)).toFixed(2);
+    showStatus(`❌ PDF file too large.<br>Got ${sizeMB} MB. Maximum is 15 MB.`, "red");
+    return;
+  }
+
+  // Disable button
   uploadBtn.disabled = true;
   uploadBtn.innerText = "Uploading...";
-  status.style.color = "#0d6efd";
-  status.innerText = "Checking for duplicate title...";
 
   try {
-    // Check if book already exists
+    // Check duplicate title
+    showStatus("Checking for duplicate title...");
     const q = query(collection(db, "books"), where("title", "==", title));
     const existing = await getDocs(q);
 
     if (!existing.empty) {
-      status.style.color = "orange";
-      status.innerText = "⚠️ Book with this title already exists!";
+      showStatus("⚠️ Book with this title already exists!", "orange");
       resetButton();
       return;
     }
 
-    status.innerText = "Uploading cover image to Cloudinary...";
+    showStatus("Uploading cover image to Cloudinary...");
 
-    // Upload Cover Image
+    // Upload Cover
     const coverForm = new FormData();
     coverForm.append("file", coverFile);
     coverForm.append("upload_preset", "library_upload");
 
-    const coverResponse = await fetch("https://api.cloudinary.com/v1_1/dxasunfat/image/upload", {
+    const coverRes = await fetch("https://api.cloudinary.com/v1_1/dxasunfat/image/upload", {
       method: "POST",
       body: coverForm
     });
-    const coverData = await coverResponse.json();
+    const coverData = await coverRes.json();
 
-    if (coverData.error) throw new Error(coverData.error.message);
+    if (coverData.error) throw new Error(coverData.error.message || "Cover upload failed");
 
-    status.innerText = "Uploading PDF to Cloudinary...";
+    showStatus("Uploading PDF to Cloudinary...");
 
-    // Upload PDF - Using image/upload for better PDF handling on Cloudinary
+    // Upload PDF
     const pdfForm = new FormData();
     pdfForm.append("file", pdfFile);
     pdfForm.append("upload_preset", "library_upload");
 
-    const pdfResponse = await fetch("https://api.cloudinary.com/v1_1/dxasunfat/image/upload", {
+    const pdfRes = await fetch("https://api.cloudinary.com/v1_1/dxasunfat/image/upload", {
       method: "POST",
       body: pdfForm
     });
-    const pdfData = await pdfResponse.json();
+    const pdfData = await pdfRes.json();
 
-    if (pdfData.error) throw new Error(pdfData.error.message);
+    if (pdfData.error) throw new Error(pdfData.error.message || "PDF upload failed");
 
-    status.innerText = "Saving book information...";
+    showStatus("Saving book information...");
 
     // Save to Firestore
     await addDoc(collection(db, "books"), {
@@ -317,8 +340,7 @@ window.uploadBook = async function () {
       createdAt: new Date().toISOString()
     });
 
-    status.style.color = "green";
-    status.innerText = "✅ Book uploaded successfully!";
+    showStatus("✅ Book uploaded successfully!", "green");
 
     // Clear form
     document.getElementById("title").value = "";
@@ -326,25 +348,17 @@ window.uploadBook = async function () {
     document.getElementById("cover").value = "";
     document.getElementById("pdf").value = "";
 
-    // Refresh book list
     loadBooks();
 
   } catch (error) {
     console.error(error);
-    status.style.color = "red";
-    status.innerText = "❌ Upload failed: " + (error.message || "Please try again");
+    showStatus("❌ Upload failed: " + (error.message || "Please try again"), "red");
   } finally {
     resetButton();
   }
 };
 
-function resetButton() {
-  const uploadBtn = document.getElementById("uploadBtn");
-  uploadBtn.disabled = false;
-  uploadBtn.innerText = "Upload Book";
-}
-
-// Load books when page loads
+// Load books on page load
 loadBooks();
 </script>
 
