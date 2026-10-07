@@ -263,9 +263,8 @@
       <a href="#" class="logo">
         <div class="logo-name">JB Digi-Lib</div>
         <div class="logo-tagline">Education is Power</div>
-      </a>
-
-      <!-- Search Bar -->
+      
+        <!-- Search Bar -->
       <div class="search-container">
         <i class="fas fa-search search-icon"></i>
         <input type="text" id="search" class="search-box" placeholder="Search by title, author or category...">
@@ -277,8 +276,32 @@
     <div id="filter-chips" class="filter-chips"></div>
     <div id="books" class="grid"></div>
     <div id="empty"></div>
-  </div>
+  </div><footer class="footer">
+  <div class="footer-content">
+    <p class="footer-brand">JB Digi-Lib</p>
+    <p class="footer-tagline">Education is Power</p>
 
+    <div class="footer-contact">
+      <p><strong>Contact: +234-9032428069</strong></p>
+      <p>
+        Email: 
+        <a href="mailto:"ojojohn95@gmail.com">ojojohn95@gmail.com</a>
+      </p>
+      <p>
+        Support: Account Details :0259498941, GT BANK, OJO JOHN OLAJESU
+        <a href="https://x.com/JB_dloved" target="_blank" rel="noopener">
+          @JB_dloved
+        </a>
+        <!-- or Discord / Instagram / Telegram / WhatsApp etc. -->
+      </p>
+    </div>
+
+    <p class="footer-copy">
+      &copy; <span id="year"></span> JB Digi-Lib. All rights reserved.
+    </p>
+  </div>
+  </footer>
+  
 <script type="module">
 import { db } from "./firebase.js";
 import { collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
