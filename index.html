@@ -1,8 +1,11 @@
+
 <!DOCTYPE html>
+<html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Digital Library</title>
   <title>JB Digi-Lib</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 
@@ -13,26 +16,30 @@
       --text: #1f2937;
       --bg: #f8fafc;
     }
-
     [data-theme="dark"] {
       --text: #e2e8f0;
       --bg: #0f172a;
     }
-
     * { margin: 0; padding: 0; box-sizing: border-box; }
-
     body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f5f6fa;
       font-family: 'Segoe UI', system-ui, sans-serif;
       background: var(--bg);
       color: var(--text);
       transition: all 0.4s;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
     }
 
     /* ==================== HEADER ==================== */
     .header {
+      background: #0d6efd;
+      color: white;
+      padding: 18px;
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
       background: rgba(255, 255, 255, 0.97);
       backdrop-filter: blur(12px);
       border-bottom: 1px solid #e2e8f0;
@@ -42,11 +49,13 @@
       box-shadow: 0 2px 15px rgba(0,0,0,0.08);
     }
 
+    .container {
+      padding: 20px;
+      max-width: 1200px;
     [data-theme="dark"] .header {
       background: rgba(15, 23, 42, 0.97);
       border-bottom: 1px solid #334155;
     }
-
     .header-content {
       max-width: 1280px;
       margin: 0 auto;
@@ -57,28 +66,24 @@
       flex-wrap: wrap;
       gap: 15px;
     }
-
     .logo {
       display: flex;
       flex-direction: column;
       text-decoration: none;
     }
-
     .logo-name {
       font-size: 28px;
       font-weight: 800;
       color: var(--primary);
-      letter-spacing: 3px;
+      letter-spacing: 3px;           /* Spread out the brand name */
       text-transform: uppercase;
     }
-
     .logo-tagline {
       font-size: 13.5px;
       color: #64748b;
       font-weight: 500;
       margin-top: 2px;
     }
-
     .search-container {
       position: relative;
       flex: 1;
@@ -87,25 +92,26 @@
 
     .search-box {
       width: 100%;
+      padding: 14px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      margin-bottom: 25px;
       padding: 14px 20px 14px 50px;
       border: 2px solid #e2e8f0;
       border-radius: 50px;
       font-size: 16px;
+      box-sizing: border-box;
       background: white;
     }
-
     [data-theme="dark"] .search-box {
       background: #1e2937;
       border-color: #475569;
-      color: #e2e8f0;
     }
-
     .search-box:focus {
       outline: none;
       border-color: var(--primary);
       box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
     }
-
     .search-icon {
       position: absolute;
       left: 20px;
@@ -114,22 +120,18 @@
       color: #64748b;
       font-size: 18px;
     }
-
     /* ==================== MAIN ==================== */
     .container {
       max-width: 1280px;
       margin: 25px auto;
       padding: 0 20px;
-      flex: 1;
     }
-
     .filter-chips {
       display: flex;
       gap: 10px;
       flex-wrap: wrap;
       margin-bottom: 25px;
     }
-
     .chip {
       padding: 8px 18px;
       background: #f1f5f9;
@@ -138,11 +140,9 @@
       cursor: pointer;
       transition: all 0.3s;
     }
-
     [data-theme="dark"] .chip {
       background: #334155;
     }
-
     .chip.active {
       background: var(--primary);
       color: white;
@@ -150,42 +150,56 @@
 
     .grid {
       display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
       grid-template-columns: repeat(auto-fill, minmax(165px, 1fr));
       gap: 20px;
     }
 
     .card {
       background: white;
+      border-radius: 12px;
+      padding: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+      text-align: center;
+      transition: transform 0.2s, box-shadow 0.2s;
       border-radius: 16px;
       overflow: hidden;
       box-shadow: 0 4px 20px rgba(0,0,0,0.08);
       transition: all 0.3s ease;
     }
-
     [data-theme="dark"] .card {
       background: #1e2937;
     }
 
     .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
       transform: translateY(-8px);
       box-shadow: 0 15px 30px rgba(0,0,0,0.12);
     }
 
     .card img {
       width: 100%;
+      height: 200px;
       height: 210px;
       object-fit: cover;
+      border-radius: 10px;
+      background: #eee;
+      margin-bottom: 10px;
       background: #e2e8f0;
     }
-
     .card-content {
       padding: 14px;
     }
 
     .title {
+      font-weight: bold;
+      font-size: 15px;
+      margin: 8px 0 4px 0;
       font-size: 15.5px;
       font-weight: 600;
       line-height: 1.3;
+      min-height: 42px;
       margin-bottom: 6px;
       display: -webkit-box;
       -webkit-line-clamp: 2;
@@ -195,118 +209,82 @@
 
     .category {
       font-size: 13px;
+      color: #666;
       color: #64748b;
       margin-bottom: 12px;
     }
 
-    .btn {
-      display: block;
+@@ -86,97 +199,137 @@
       width: 100%;
       padding: 10px;
       margin: 6px 0;
+      border-radius: 8px;
       border-radius: 10px;
       text-decoration: none;
       font-weight: 600;
       text-align: center;
       font-size: 14px;
+      font-weight: bold;
+      color: white;
+      transition: all 0.2s;
       transition: all 0.3s;
     }
 
+    .read { 
+      background: #0d6efd; 
+    }
+    .read:hover {
+      background: #0b5ed7;
+    }
     .read { background: var(--primary); color: white; }
     .read:hover { background: var(--primary-dark); }
 
+    .download { 
+      background: #28a745; 
+    }
+    .download:hover {
+      background: #218838;
+    }
     .download { background: #22c55e; color: white; }
     .download:hover { background: #16a34a; }
 
+    .empty {
     .empty, .loading {
       text-align: center;
+      margin-top: 80px;
       margin-top: 60px;
       color: #666;
+      font-size: 18px;
+    }
+    .loading {
+      text-align: center;
+      margin-top: 50px;
+      color: #0d6efd;
+      font-size: 18px;
       font-size: 17px;
       grid-column: 1 / -1;
     }
 
     .spinner {
       display: inline-block;
+      width: 24px;
+      height: 24px;
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #0d6efd;
       width: 32px;
       height: 32px;
       border: 4px solid #f3f3f3;
       border-top: 4px solid var(--primary);
       border-radius: 50%;
       animation: spin 1s linear infinite;
+      margin-bottom: 10px;
       margin-bottom: 12px;
     }
 
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* ==================== FOOTER ==================== */
-    .footer {
-      background: #1e2937;
-      color: #e2e8f0;
-      text-align: center;
-      padding: 2.5rem 1.5rem;
-      margin-top: 40px;
-      font-size: 0.95rem;
-    }
-
-    [data-theme="dark"] .footer {
-      background: #0f172a;
-      border-top: 1px solid #334155;
-    }
-
-    .footer-content {
-      max-width: 700px;
-      margin: 0 auto;
-    }
-
-    .footer-brand {
-      font-size: 1.4rem;
-      font-weight: 700;
-      color: #818cf8;
-      margin-bottom: 4px;
-      letter-spacing: 1px;
-    }
-
-    .footer-tagline {
-      font-size: 0.95rem;
-      color: #94a3b8;
-      margin-bottom: 1.8rem;
-      font-style: italic;
-    }
-
-    .footer-contact {
-      margin-bottom: 1.8rem;
-      line-height: 1.8;
-    }
-
-    .footer-contact p {
-      margin: 0.6rem 0;
-    }
-
-    .footer-contact a {
-      color: #7dd3fc;
-      text-decoration: none;
-      transition: color 0.2s;
-    }
-
-    .footer-contact a:hover {
-      color: #38bdf8;
-      text-decoration: underline;
-    }
-
-    .footer-contact i {
-      width: 20px;
-      margin-right: 6px;
-      color: #818cf8;
-    }
-
-    .footer-copy {
-      font-size: 0.85rem;
-      color: #94a3b8;
-      margin: 0;
-      opacity: 0.85;
-    }
-
     /* Responsive */
     @media (max-width: 768px) {
       .header-content {
@@ -328,7 +306,6 @@
   </style>
 </head>
 <body data-theme="light">
-
   <!-- HEADER -->
   <header class="header">
     <div class="header-content">
@@ -337,7 +314,6 @@
         <div class="logo-name">JB Digi-Lib</div>
         <div class="logo-tagline">Education is Power</div>
       </a>
-
       <!-- Search Bar -->
       <div class="search-container">
         <i class="fas fa-search search-icon"></i>
@@ -346,123 +322,170 @@
     </div>
   </header>
 
+<body>
+<div class="header">📚 Digital Library</div>
+<div class="container">
+  <input type="text" id="search" class="search-box" placeholder="Search by title or category...">
+  <div id="books" class="grid"></div>
+  <div id="empty" class="empty"></div>
+</div>
   <div class="container">
     <div id="filter-chips" class="filter-chips"></div>
     <div id="books" class="grid"></div>
     <div id="empty"></div>
   </div>
 
-  <!-- FOOTER -->
-  <footer class="footer">
-    <div class="footer-content">
-      <p class="footer-brand">JB Digi-Lib</p>
-      <p class="footer-tagline">Education is Power</p>
+<script type="module">
+import { db } from "./firebase.js";
+import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+import { collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
-      <div class="footer-contact">
-        <p>
-          <i class="fas fa-phone"></i> 
-          <strong>Contact:</strong> 
-          <a href="tel:+2349032428069">+234 903 242 8069</a>
-        </p>
+const booksContainer = document.getElementById("books");
+const emptyEl = document.getElementById("empty");
+const searchInput = document.getElementById("search");
+const filterChips = document.getElementById("filter-chips");
 
-        <p>
-          <i class="fas fa-envelope"></i> 
-          <strong>Email:</strong> 
-          <a href="mailto:ojojohn95@gmail.com">ojojohn95@gmail.com</a>
-        </p>
+let allBooks = [];
+let currentCategoryFilter = "All";
 
-        <p>
-          <i class="fas fa-university"></i> 
-          <strong>Support Account:</strong><br>
-          0259498941<br>
-          GT Bank<br>
-          OJO JOHN OLAJESU
-        </p>
-
-        <p>
-          <i class="fab fa-x-twitter"></i> 
-          <strong>Follow:</strong> 
-          <a href="https://x.com/JB_dloved" target="_blank" rel="noopener">@JB_dloved</a>
-        </p>
-      </div>
-
-      <p class="footer-copy">
-        &copy; <span id="year"></span> JB Digi-Lib. All rights reserved.
-      </p>
+// Show loading state
+// Show Loading
+function showLoading() {
+  emptyEl.innerHTML = `
+  booksContainer.innerHTML = `
+    <div class="loading">
+      <div class="spinner"></div><br>
+      Loading books...
     </div>
-  </footer>
+  `;
+  booksContainer.innerHTML = "";
+}
 
-  <script>
-    // Set current year
-    document.getElementById('year').textContent = new Date().getFullYear();
-  </script>
+// Create Category Filter Chips
+function createFilterChips(categories) {
+  filterChips.innerHTML = `<div class="chip active" data-category="All">All Books</div>`;
+  
+  categories.forEach(cat => {
+    const chip = document.createElement("div");
+    chip.className = "chip";
+    chip.textContent = cat;
+    chip.dataset.category = cat;
+    filterChips.appendChild(chip);
+  });
+  filterChips.addEventListener("click", (e) => {
+    if (e.target.classList.contains("chip")) {
+      document.querySelectorAll(".chip").forEach(c => c.classList.remove("active"));
+      e.target.classList.add("active");
+      currentCategoryFilter = e.target.dataset.category;
+      filterBooks();
+    }
+  });
+}
+// Load Books
+async function loadBooks() {
+  showLoading();
 
-  <script type="module">
-    import { db } from "./firebase.js";
-    import { collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+  try {
+    const snapshot = await getDocs(collection(db, "books"));
+    const q = query(collection(db, "books"), orderBy("title"));
+    const snapshot = await getDocs(q);
 
-    const booksContainer = document.getElementById("books");
-    const emptyEl = document.getElementById("empty");
-    const searchInput = document.getElementById("search");
-    const filterChips = document.getElementById("filter-chips");
+    allBooks = [];
+    snapshot.forEach(doc => {
+@@ -186,14 +339,15 @@
+    if (allBooks.length === 0) {
+      emptyEl.innerHTML = `<p>No books available yet.<br>Check back later!</p>`;
+      booksContainer.innerHTML = "";
+    } else {
+      emptyEl.innerHTML = "";
+      displayBooks(allBooks);
+      return;
+    }
 
-    let allBooks = [];
-    let currentCategoryFilter = "All";
+    const categories = [...new Set(allBooks.map(b => b.category).filter(Boolean))];
+    createFilterChips(categories);
+    displayBooks(allBooks);
+  } catch (error) {
+    console.error("Error loading books:", error);
+    emptyEl.innerHTML = `<p style="color:red;">❌ Failed to load books. Please try again later.</p>`;
+    emptyEl.innerHTML = `<p style="color:red;">❌ Failed to load books.</p>`;
+  }
+}
 
-    // Show Loading
-    function showLoading() {
-      booksContainer.innerHTML = `
-        <div class="loading">
-          <div class="spinner"></div><br>
-          Loading books...
+@@ -210,45 +364,55 @@
+  books.forEach(book => {
+    const title = book.title || "Untitled Book";
+    const category = book.category || "Uncategorized";
+    const cover = book.coverUrl || "https://via.placeholder.com/150x200?text=No+Cover";
+    const cover = book.coverUrl || "";
+    const pdfUrl = book.pdfUrl || "#";
+
+    booksContainer.innerHTML += `
+      <div class="card">
+        <img src="${cover}" alt="${title} cover" onerror="this.src='https://via.placeholder.com/150x200?text=No+Cover'">
+        
+        <div class="title">${title}</div>
+        <div class="category">${category}</div>
+        <!-- Read Online - Opens PDF directly in new tab -->
+        <a href="${pdfUrl}" target="_blank" class="btn read">
+          📖 Read Online
+        </a>
+        <!-- Download Button -->
+        <a href="${pdfUrl}" download class="btn download">
+          ⬇ Download PDF
+        </a>
+        <img src="${cover}" 
+             alt="${title}" 
+             onerror="this.src='https://via.placeholder.com/185x240/6366f1/ffffff?text=No+Cover'">
+        <div class="card-content">
+          <div class="title">${title}</div>
+          <div class="category">${category}</div>
+          
+          <a href="${pdfUrl}" target="_blank" class="btn read">
+            📖 Read Online
+          </a>
+          <a href="${pdfUrl}" download class="btn download">
+            ⬇ Download PDF
+          </a>
         </div>
-      `;
-    }
+      </div>
+    `;
+  });
+}
 
-    // Create Category Filter Chips
-    function createFilterChips(categories) {
-      filterChips.innerHTML = `<div class="chip active" data-category="All">All Books</div>`;
-      
-      categories.forEach(cat => {
-        const chip = document.createElement("div");
-        chip.className = "chip";
-        chip.textContent = cat;
-        chip.dataset.category = cat;
-        filterChips.appendChild(chip);
-      });
+// Live Search
+searchInput.addEventListener("input", () => {
+  const searchTerm = searchInput.value.toLowerCase().trim();
+function filterBooks() {
+  let filtered = allBooks;
+  if (currentCategoryFilter !== "All") {
+    filtered = filtered.filter(book => book.category === currentCategoryFilter);
+  }
 
-      filterChips.addEventListener("click", (e) => {
-        if (e.target.classList.contains("chip")) {
-          document.querySelectorAll(".chip").forEach(c => c.classList.remove("active"));
-          e.target.classList.add("active");
-          currentCategoryFilter = e.target.dataset.category;
-          filterBooks();
-        }
-      });
-    }
+  const filteredBooks = allBooks.filter(book => 
+    (book.title || "").toLowerCase().includes(searchTerm) ||
+    (book.category || "").toLowerCase().includes(searchTerm)
+  );
+  const term = searchInput.value.toLowerCase().trim();
+  if (term) {
+    filtered = filtered.filter(book => 
+      (book.title?.toLowerCase().includes(term)) ||
+      (book.author?.toLowerCase().includes(term)) ||
+      (book.category?.toLowerCase().includes(term))
+    );
+  }
 
-    // Load Books
-    async function loadBooks() {
-      showLoading();
+  displayBooks(filteredBooks);
+});
+  displayBooks(filtered);
+}
+// Live Search
+searchInput.addEventListener("input", filterBooks);
 
-      try {
-        const q = query(collection(db, "books"), orderBy("title"));
-        const snapshot = await getDocs(q);
+// Load books when page opens
+// Initialize
+loadBooks();
+</script>
 
-        allBooks = [];
-        snapshot.forEach(doc => {
-          allBooks.push({ id: doc.id, ...doc.data() });
-        });
-
-        if (allBooks.length === 0) {
-          emptyEl.innerHTML = `<p>No books available yet.<br>Check back later!</p>`;
-          booksContainer.innerHTML = "";
-          return;
-        }
-
-        const categories = [...new Set(allBooks.map(b => b.category).filter(Boolean))];
-        createFilterChips(categories);
-        displayBooks(allBooks);
-      } catch (error) {
-        console.error("Error loading books:", error);
-        emptyEl.innerHTML = `<p style="color:red;">❌ Failed to load books.</p>
+</body>
+</html>
