@@ -26,6 +26,9 @@
       background: var(--bg);
       color: var(--text);
       transition: all 0.4s;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
     }
 
     /* ==================== HEADER ==================== */
@@ -65,7 +68,7 @@
       font-size: 28px;
       font-weight: 800;
       color: var(--primary);
-      letter-spacing: 3px;           /* Spread out the brand name */
+      letter-spacing: 3px;
       text-transform: uppercase;
     }
 
@@ -94,6 +97,7 @@
     [data-theme="dark"] .search-box {
       background: #1e2937;
       border-color: #475569;
+      color: #e2e8f0;
     }
 
     .search-box:focus {
@@ -116,6 +120,7 @@
       max-width: 1280px;
       margin: 25px auto;
       padding: 0 20px;
+      flex: 1;
     }
 
     .filter-chips {
@@ -234,6 +239,74 @@
 
     @keyframes spin { to { transform: rotate(360deg); } }
 
+    /* ==================== FOOTER ==================== */
+    .footer {
+      background: #1e2937;
+      color: #e2e8f0;
+      text-align: center;
+      padding: 2.5rem 1.5rem;
+      margin-top: 40px;
+      font-size: 0.95rem;
+    }
+
+    [data-theme="dark"] .footer {
+      background: #0f172a;
+      border-top: 1px solid #334155;
+    }
+
+    .footer-content {
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .footer-brand {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #818cf8;
+      margin-bottom: 4px;
+      letter-spacing: 1px;
+    }
+
+    .footer-tagline {
+      font-size: 0.95rem;
+      color: #94a3b8;
+      margin-bottom: 1.8rem;
+      font-style: italic;
+    }
+
+    .footer-contact {
+      margin-bottom: 1.8rem;
+      line-height: 1.8;
+    }
+
+    .footer-contact p {
+      margin: 0.6rem 0;
+    }
+
+    .footer-contact a {
+      color: #7dd3fc;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-contact a:hover {
+      color: #38bdf8;
+      text-decoration: underline;
+    }
+
+    .footer-contact i {
+      width: 20px;
+      margin-right: 6px;
+      color: #818cf8;
+    }
+
+    .footer-copy {
+      font-size: 0.85rem;
+      color: #94a3b8;
+      margin: 0;
+      opacity: 0.85;
+    }
+
     /* Responsive */
     @media (max-width: 768px) {
       .header-content {
@@ -263,8 +336,9 @@
       <a href="#" class="logo">
         <div class="logo-name">JB Digi-Lib</div>
         <div class="logo-tagline">Education is Power</div>
-      
-        <!-- Search Bar -->
+      </a>
+
+      <!-- Search Bar -->
       <div class="search-container">
         <i class="fas fa-search search-icon"></i>
         <input type="text" id="search" class="search-box" placeholder="Search by title, author or category...">
@@ -276,166 +350,119 @@
     <div id="filter-chips" class="filter-chips"></div>
     <div id="books" class="grid"></div>
     <div id="empty"></div>
-  </div><footer class="footer">
-  <div class="footer-content">
-    <p class="footer-brand">JB Digi-Lib</p>
-    <p class="footer-tagline">Education is Power</p>
-
-    <div class="footer-contact">
-      <p><strong>Contact: +234-9032428069</strong></p>
-      <p>
-        Email: 
-        <a href="mailto:"ojojohn95@gmail.com">ojojohn95@gmail.com</a>
-      </p>
-      <p>
-        Support: Account Details :0259498941, GT BANK, OJO JOHN OLAJESU
-        <a href="https://x.com/JB_dloved" target="_blank" rel="noopener">
-          @JB_dloved
-        </a>
-        <!-- or Discord / Instagram / Telegram / WhatsApp etc. -->
-      </p>
-    </div>
-
-    <p class="footer-copy">
-      &copy; <span id="year"></span> JB Digi-Lib. All rights reserved.
-    </p>
   </div>
-  </footer>
-  
-<script type="module">
-import { db } from "./firebase.js";
-import { collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
-const booksContainer = document.getElementById("books");
-const emptyEl = document.getElementById("empty");
-const searchInput = document.getElementById("search");
-const filterChips = document.getElementById("filter-chips");
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-content">
+      <p class="footer-brand">JB Digi-Lib</p>
+      <p class="footer-tagline">Education is Power</p>
 
-let allBooks = [];
-let currentCategoryFilter = "All";
+      <div class="footer-contact">
+        <p>
+          <i class="fas fa-phone"></i> 
+          <strong>Contact:</strong> 
+          <a href="tel:+2349032428069">+234 903 242 8069</a>
+        </p>
 
-// Show Loading
-function showLoading() {
-  booksContainer.innerHTML = `
-    <div class="loading">
-      <div class="spinner"></div><br>
-      Loading books...
-    </div>
-  `;
-}
+        <p>
+          <i class="fas fa-envelope"></i> 
+          <strong>Email:</strong> 
+          <a href="mailto:ojojohn95@gmail.com">ojojohn95@gmail.com</a>
+        </p>
 
-// Create Category Filter Chips
-function createFilterChips(categories) {
-  filterChips.innerHTML = `<div class="chip active" data-category="All">All Books</div>`;
-  
-  categories.forEach(cat => {
-    const chip = document.createElement("div");
-    chip.className = "chip";
-    chip.textContent = cat;
-    chip.dataset.category = cat;
-    filterChips.appendChild(chip);
-  });
+        <p>
+          <i class="fas fa-university"></i> 
+          <strong>Support Account:</strong><br>
+          0259498941<br>
+          GT Bank<br>
+          OJO JOHN OLAJESU
+        </p>
 
-  filterChips.addEventListener("click", (e) => {
-    if (e.target.classList.contains("chip")) {
-      document.querySelectorAll(".chip").forEach(c => c.classList.remove("active"));
-      e.target.classList.add("active");
-      currentCategoryFilter = e.target.dataset.category;
-      filterBooks();
-    }
-  });
-}
-
-// Load Books
-async function loadBooks() {
-  showLoading();
-
-  try {
-    const q = query(collection(db, "books"), orderBy("title"));
-    const snapshot = await getDocs(q);
-
-    allBooks = [];
-    snapshot.forEach(doc => {
-      allBooks.push({ id: doc.id, ...doc.data() });
-    });
-
-    if (allBooks.length === 0) {
-      emptyEl.innerHTML = `<p>No books available yet.<br>Check back later!</p>`;
-      booksContainer.innerHTML = "";
-      return;
-    }
-
-    const categories = [...new Set(allBooks.map(b => b.category).filter(Boolean))];
-    createFilterChips(categories);
-    displayBooks(allBooks);
-  } catch (error) {
-    console.error("Error loading books:", error);
-    emptyEl.innerHTML = `<p style="color:red;">❌ Failed to load books.</p>`;
-  }
-}
-
-function displayBooks(books) {
-  booksContainer.innerHTML = "";
-
-  if (books.length === 0) {
-    emptyEl.innerHTML = `<p>No matching books found.</p>`;
-    return;
-  }
-
-  emptyEl.innerHTML = "";
-
-  books.forEach(book => {
-    const title = book.title || "Untitled Book";
-    const category = book.category || "Uncategorized";
-    const cover = book.coverUrl || "";
-    const pdfUrl = book.pdfUrl || "#";
-
-    booksContainer.innerHTML += `
-      <div class="card">
-        <img src="${cover}" 
-             alt="${title}" 
-             onerror="this.src='https://via.placeholder.com/185x240/6366f1/ffffff?text=No+Cover'">
-        <div class="card-content">
-          <div class="title">${title}</div>
-          <div class="category">${category}</div>
-          
-          <a href="${pdfUrl}" target="_blank" class="btn read">
-            📖 Read Online
-          </a>
-          <a href="${pdfUrl}" download class="btn download">
-            ⬇ Download PDF
-          </a>
-        </div>
+        <p>
+          <i class="fab fa-x-twitter"></i> 
+          <strong>Follow:</strong> 
+          <a href="https://x.com/JB_dloved" target="_blank" rel="noopener">@JB_dloved</a>
+        </p>
       </div>
-    `;
-  });
-}
 
-function filterBooks() {
-  let filtered = allBooks;
+      <p class="footer-copy">
+        &copy; <span id="year"></span> JB Digi-Lib. All rights reserved.
+      </p>
+    </div>
+  </footer>
 
-  if (currentCategoryFilter !== "All") {
-    filtered = filtered.filter(book => book.category === currentCategoryFilter);
-  }
+  <script>
+    // Set current year
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
 
-  const term = searchInput.value.toLowerCase().trim();
-  if (term) {
-    filtered = filtered.filter(book => 
-      (book.title?.toLowerCase().includes(term)) ||
-      (book.author?.toLowerCase().includes(term)) ||
-      (book.category?.toLowerCase().includes(term))
-    );
-  }
+  <script type="module">
+    import { db } from "./firebase.js";
+    import { collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
-  displayBooks(filtered);
-}
+    const booksContainer = document.getElementById("books");
+    const emptyEl = document.getElementById("empty");
+    const searchInput = document.getElementById("search");
+    const filterChips = document.getElementById("filter-chips");
 
-// Live Search
-searchInput.addEventListener("input", filterBooks);
+    let allBooks = [];
+    let currentCategoryFilter = "All";
 
-// Initialize
-loadBooks();
-</script>
+    // Show Loading
+    function showLoading() {
+      booksContainer.innerHTML = `
+        <div class="loading">
+          <div class="spinner"></div><br>
+          Loading books...
+        </div>
+      `;
+    }
 
-</body>
-</html>
+    // Create Category Filter Chips
+    function createFilterChips(categories) {
+      filterChips.innerHTML = `<div class="chip active" data-category="All">All Books</div>`;
+      
+      categories.forEach(cat => {
+        const chip = document.createElement("div");
+        chip.className = "chip";
+        chip.textContent = cat;
+        chip.dataset.category = cat;
+        filterChips.appendChild(chip);
+      });
+
+      filterChips.addEventListener("click", (e) => {
+        if (e.target.classList.contains("chip")) {
+          document.querySelectorAll(".chip").forEach(c => c.classList.remove("active"));
+          e.target.classList.add("active");
+          currentCategoryFilter = e.target.dataset.category;
+          filterBooks();
+        }
+      });
+    }
+
+    // Load Books
+    async function loadBooks() {
+      showLoading();
+
+      try {
+        const q = query(collection(db, "books"), orderBy("title"));
+        const snapshot = await getDocs(q);
+
+        allBooks = [];
+        snapshot.forEach(doc => {
+          allBooks.push({ id: doc.id, ...doc.data() });
+        });
+
+        if (allBooks.length === 0) {
+          emptyEl.innerHTML = `<p>No books available yet.<br>Check back later!</p>`;
+          booksContainer.innerHTML = "";
+          return;
+        }
+
+        const categories = [...new Set(allBooks.map(b => b.category).filter(Boolean))];
+        createFilterChips(categories);
+        displayBooks(allBooks);
+      } catch (error) {
+        console.error("Error loading books:", error);
+        emptyEl.innerHTML = `<p style="color:red;">❌ Failed to load books.</p>
