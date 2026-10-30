@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JB Digi-Lib — Education is Power</title>
+  <meta name="description" content="JB Digi-Lib: read and download books online, free.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-theme="light">
+
+  <header class="header">
+    <div class="header-content">
+      <a href="#" class="logo">
+        <span class="logo-mark"><i class="fas fa-book-open"></i></span>
+        <span class="logo-text">
+          <span class="logo-name">JB Digi-Lib</span>
+          <span class="logo-tagline">Education is Power</span>
+        </span>
+      </a>
+
+      <div class="search-container">
+        <i class="fas fa-search search-icon"></i>
+        <input type="text" id="search" class="search-box" placeholder="Search by title, author or category...">
+      </div>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="hero-inner">
+      <span class="eyebrow">Your digital library</span>
+      <h1>Knowledge, open to <em>everyone.</em></h1>
+      <p>Browse the collection, read online in seconds, or download a PDF to keep forever.</p>
+    </div>
+  </section>
+
+  <main class="container">
+    <div class="section-head">
+      <h2>Browse the collection</h2>
+    </div>
+    <div id="filter-chips" class="filter-chips"></div>
+    <div id="books" class="grid"></div>
+    <div id="empty"></div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <span class="footer-logo"><i class="fas fa-book-open"></i></span>
+        <div>
+          <p class="footer-name">JB Digi-Lib</p>
+          <p class="footer-tagline">Education is Power</p>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h3 class="footer-heading">Contact us</h3>
+        <ul class="footer-list">
+          <li>
+            <i class="fab fa-whatsapp"></i>
+            <a href="https://wa.me/2349032428069" target="_blank" rel="noopener">+234 903 242 8069</a>
+          </li>
+          <li>
+            <i class="fas fa-envelope"></i>
+            <a href="mailto:ojojohn95@gmail.com">ojojohn95@gmail.com</a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h3 class="footer-heading">Support us</h3>
+        <ul class="footer-list">
+          <li>
+            <i class="fas fa-university"></i>
+            <span>GTBank &mdash; OJO John Olajesu</span>
+          </li>
+          <li>
+            <i class="fas fa-credit-card"></i>
+            <span class="footer-account">0259498941</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="footer-copy">&copy; JB Digi-Lib &middot; Free books, open to everyone.</p>
+  </footer>
+
+<script type="module">
+import { db } from "./firebase.js";
+import { collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+
+const booksContainer = document.getElementById("books");
+const emptyEl = document.getElementById("empty");
+const searchInput = document.getElementById("search");
+const filterChips = document.getElementById("filter-chips");
+
+let allBooks = [];
+let currentCategoryFilter = "All";
+
+// Show Loading
+function showLoading() {
+  booksContainer.innerHTML = `
+    <div class="loading">
+      <div class="spinner"></div><br>
+      Loading books...
+    </div>
+  `;
+}
+
+// Create Category Filter Chips
+function createFilterChips(categories) {
+  filterChips.innerHTML = `<div class="chip active" data-category="All">All Books</div>`;
+  
+  categories.forEach(cat => {
+    const chip = document.createElement("div");
+    chip.className = "chip";
+    chip.textContent = cat;
+    chip.dataset.category = cat;
+    filterChips.appendChild(chip);
+  });
+
+  filterChips.addEventListener("click", (e) => {
+    if (e.target.classList.contains("chip")) {
+      document.querySelectorAll(".chip").forEach(c => c.classList.remove("active"));
+      e.target.classList.add("active");
+      currentCategoryFilter = e.target.dataset.category;
+      filterBooks();
+    }
+  });
+}
+
+// Load Books
+async function loadBooks() {
+  showLoading();
+
+  try {
+    const q = query(collection(db, "books"), orderBy("title"));
+    const snapshot = await getDocs(q);
+
+    allBooks = [];
+    snapshot.forEach(doc => {
+      allBooks.push({ id: doc.id, ...doc.data() });
+    });
+
+    if (allBooks.length === 0) {
+      emptyEl.innerHTML = `<p>No books available yet.<br>Check back later!</p>`;
+      booksContainer.innerHTML = "";
+      return;
+    }
+
+    const categories = [...new Set(allBooks.map(b => b.category).filter(Boolean))];
+    createFilterChips(categories);
+    displayBooks(allBooks);
+  } catch (error) {
+    console.error("Error loading books:", error);
+    emptyEl.innerHTML = `<p style="color:red;">❌ Failed to load books.</p>`;
+  }
+}
+
+function displayBooks(books) {
+  booksContainer.innerHTML = "";
+
+  if (books.length === 0) {
+    emptyEl.innerHTML = `<p>No matching books found.</p>`;
+    return;
+  }
+
+  emptyEl.innerHTML = "";
+
+  books.forEach(book => {
+    const title = book.title || "Untitled Book";
+    const category = book.category || "Uncategorized";
+    const cover = book.coverUrl || "";
+    const pdfUrl = book.pdfUrl || "#";
+
+    booksContainer.innerHTML += `
+      <div class="card">
+        <img src="${cover}" 
+             alt="${title}" 
+             onerror="this.src='https://via.placeholder.com/185x240/6366f1/ffffff?text=No+Cover'">
+        <div class="card-content">
+          <div class="title">${title}</div>
+          <div class="category">${category}</div>
+          
+          <a href="${pdfUrl}" target="_blank" class="btn read">
+            📖 Read Online
+          </a>
+          <a href="${pdfUrl}" download class="btn download">
+            ⬇ Download PDF
+          </a>
+        </div>
+      </div>
+    `;
+  });
+}
+
+function filterBooks() {
+  let filtered = allBooks;
+
+  if (currentCategoryFilter !== "All") {
+    filtered = filtered.filter(book => book.category === currentCategoryFilter);
+  }
+
+  const term = searchInput.value.toLowerCase().trim();
+  if (term) {
+    filtered = filtered.filter(book => 
+      (book.title?.toLowerCase().includes(term)) ||
+      (book.author?.toLowerCase().includes(term)) ||
+      (book.category?.toLowerCase().includes(term))
+    );
+  }
+
+  displayBooks(filtered);
+}
+
+// Live Search
+searchInput.addEventListener("input", filterBooks);
+
+// Initialize
+loadBooks();
+</script>
+
+</body>
+</html>
